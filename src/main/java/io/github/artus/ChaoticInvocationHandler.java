@@ -6,34 +6,35 @@ import lombok.Setter;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Random;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
 public class ChaoticInvocationHandler implements InvocationHandler {
 
-    private Random randomNumberGenerator;
+    private DecisionMaker decisionMaker;
     private ThrowableSupplier throwableSupplier;
+    private Object target;
 
-    public ChaoticInvocationHandler() {
-        this(new Random());
+    public ChaoticInvocationHandler(Object target) {
+        this(target, new RandomDecisionMaker());
     }
 
-    public ChaoticInvocationHandler(Random randomNumberGenerator) {
-        this(randomNumberGenerator, new RuntimeExceptionSupplier());
+    public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker) {
+        this(target, decisionMaker, new RuntimeExceptionSupplier());
     }
 
-    public ChaoticInvocationHandler(Random randomNumberGenerator, ThrowableSupplier throwableSupplier) {
-        this.setRandomNumberGenerator(randomNumberGenerator);
+    public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, ThrowableSupplier throwableSupplier) {
+        this.setDecisionMaker(decisionMaker);
         this.setThrowableSupplier(throwableSupplier);
+        this.setTarget(target);
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
-
-        return null;
+        if (this.getDecisionMaker().decide()) {
+            throw this.getThrowableSupplier().next();
+        } else {
+            return method.invoke(this.getTarget(), args);
+        }
     }
-
-
 }
