@@ -47,15 +47,12 @@ class RandomDecisionMakerTest {
 
         int count = 0;
         int positives = 0;
-        int negatives = 0;
 
         randomDecisionMaker.setProbability(0.5);
 
         for (int i = 0; i < 1000000; i++) {
             if (randomDecisionMaker.decide()) {
                 positives++;
-            } else {
-                negatives++;
             }
             count++;
         }
