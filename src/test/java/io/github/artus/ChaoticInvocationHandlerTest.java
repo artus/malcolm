@@ -49,20 +49,43 @@ class ChaoticInvocationHandlerTest {
     }
 
     @Test
-    void ThrowableSuppliers_get_correctly_used_when_required() throws NoSuchMethodException {
+    void when_no_ThrowableTransformersManager_is_supplied_Throwables_are_not_transformed() {
         InnerClass innerClass = new InnerClass();
         RandomDecisionMaker randomDecisionMaker = new RandomDecisionMaker(1);
-        Map<Method, ThrowableTransformer> throwableTransformers = new HashMap<>();
-        Method getMethod = InnerInterface.class.getMethod("get");
-        throwableTransformers.put(getMethod, new BooleanThrowableTransformer());
 
         InnerInterface proxiedClass = (InnerInterface) Proxy.newProxyInstance(
                 this.getClass().getClassLoader(),
                 new Class[] { InnerInterface.class },
-                new ChaoticInvocationHandler(innerClass, randomDecisionMaker, throwableTransformers)
+                new ChaoticInvocationHandler(innerClass, randomDecisionMaker)
+        );
+
+        assertThrows(RuntimeException.class, proxiedClass::get);
+        assertThrows(RuntimeException.class, () -> {
+            String toString = proxiedClass.someString();
+        });
+    }
+
+    @Test
+    void ThrowableTransformers_get_correctly_used_when_required() throws NoSuchMethodException {
+        InnerClass innerClass = new InnerClass();
+        RandomDecisionMaker randomDecisionMaker = new RandomDecisionMaker(1);
+
+        Map<Method, ThrowableTransformer> throwableTransformers = new HashMap<>();
+        Method getMethod = InnerInterface.class.getMethod("get");
+        throwableTransformers.put(getMethod, new BooleanThrowableTransformer());
+
+        ThrowableTransformer defaultTransformer = throwable -> "transformed";
+
+        ThrowableTransformerManager throwableTransformerManager = new ThrowableTransformerManager(defaultTransformer, throwableTransformers);
+
+        InnerInterface proxiedClass = (InnerInterface) Proxy.newProxyInstance(
+                this.getClass().getClassLoader(),
+                new Class[] { InnerInterface.class },
+                new ChaoticInvocationHandler(innerClass, randomDecisionMaker, throwableTransformerManager)
         );
 
         assertFalse(proxiedClass.get());
+        assertEquals(proxiedClass.someString(), "transformed");
     }
 
     private static class InnerClass implements InnerInterface{
@@ -74,11 +97,17 @@ class ChaoticInvocationHandlerTest {
         public boolean get() {
             return true;
         }
+
+        @Override
+        public String someString() {
+            return "not transformed";
+        }
     }
 
     private interface InnerInterface {
         void execute();
         boolean get();
+        String someString();
     }
 
 }

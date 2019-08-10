@@ -1,22 +1,17 @@
 package io.github.artus;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
-@Setter(AccessLevel.PRIVATE)
 public class ChaoticInvocationHandler implements InvocationHandler {
 
-    private DecisionMaker decisionMaker;
-    private ThrowableSupplier defaultThrowableSupplier;
-    private Object target;
-    private Map<Method, ThrowableTransformer> throwableTransformers;
+    private final DecisionMaker decisionMaker;
+    private final ThrowableSupplier defaultThrowableSupplier;
+    private final Object target;
+    private final ThrowableTransformerManager throwableTransformerManager;
 
     public ChaoticInvocationHandler(Object target) {
         this(target, new RandomDecisionMaker());
@@ -27,18 +22,18 @@ public class ChaoticInvocationHandler implements InvocationHandler {
     }
 
     public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, ThrowableSupplier defaultThrowableSupplier) {
-        this(target, decisionMaker, new HashMap<>(), defaultThrowableSupplier);
+        this(target, decisionMaker, defaultThrowableSupplier, null);
     }
 
-    public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, Map<Method, ThrowableTransformer> throwableTransformers) {
-        this(target, decisionMaker, throwableTransformers, new RuntimeExceptionSupplier());
+    public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, ThrowableTransformerManager throwableTransformerManager) {
+        this(target, decisionMaker, new RuntimeExceptionSupplier(), throwableTransformerManager);
     }
 
-    public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, Map<Method, ThrowableTransformer> throwableTransformers, ThrowableSupplier defaultThrowableSupplier) {
-        this.setDecisionMaker(decisionMaker);
-        this.setDefaultThrowableSupplier(defaultThrowableSupplier);
-        this.setTarget(target);
-        this.setThrowableTransformers(throwableTransformers);
+    public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, ThrowableSupplier defaultThrowableSupplier, ThrowableTransformerManager throwableTransformerManager) {
+        this.decisionMaker = decisionMaker;
+        this.defaultThrowableSupplier = defaultThrowableSupplier;
+        this.target = target;
+        this.throwableTransformerManager = throwableTransformerManager;
     }
 
     @Override
@@ -46,7 +41,7 @@ public class ChaoticInvocationHandler implements InvocationHandler {
         if (this.getDecisionMaker().decide()) {
             Throwable throwable = this.getDefaultThrowableSupplier().next();
             if (this.transformationIsRequired(method)) {
-                return this.getThrowableTransformers().get(method).transform(throwable);
+                return this.getThrowableTransformerManager().transform(method, throwable);
             }
             throw throwable;
         } else {
@@ -55,6 +50,7 @@ public class ChaoticInvocationHandler implements InvocationHandler {
     }
 
     private boolean transformationIsRequired(Method method) {
-        return this.getThrowableTransformers().containsKey(method);
+        return this.getThrowableTransformerManager() != null
+                && this.getThrowableTransformerManager().transformationIsRequired(method);
     }
 }
