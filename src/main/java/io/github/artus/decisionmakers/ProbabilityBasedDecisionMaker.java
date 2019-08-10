@@ -1,4 +1,4 @@
-package io.github.artus;
+package io.github.artus.decisionmakers;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,22 +8,22 @@ import java.util.Random;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
-public class RandomDecisionMaker implements DecisionMaker {
+public class ProbabilityBasedDecisionMaker implements DecisionMaker {
 
     public static final double DEFAULT_PROBABILITY = 0.5;
 
     private double probability;
     private Random randomNumberGenerator;
 
-    public RandomDecisionMaker() {
+    public ProbabilityBasedDecisionMaker() {
         this(DEFAULT_PROBABILITY);
     }
 
-    public RandomDecisionMaker(double probability) {
+    public ProbabilityBasedDecisionMaker(double probability) {
         this(probability, new Random());
     }
 
-    public RandomDecisionMaker(double probability, Random randomNumberGenerator) {
+    public ProbabilityBasedDecisionMaker(double probability, Random randomNumberGenerator) {
         this.setProbability(probability);
         this.setRandomNumberGenerator(randomNumberGenerator);
     }

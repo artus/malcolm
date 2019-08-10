@@ -1,4 +1,4 @@
-package io.github.artus;
+package io.github.artus.transformers;
 
 public class BooleanThrowableTransformer implements ThrowableTransformer<Boolean> {
     @Override

@@ -1,5 +1,10 @@
 package io.github.artus;
 
+import io.github.artus.decisionmakers.ProbabilityBasedDecisionMaker;
+import io.github.artus.managers.ThrowableTransformerManager;
+import io.github.artus.suppliers.RuntimeExceptionSupplier;
+import io.github.artus.transformers.BooleanThrowableTransformer;
+import io.github.artus.transformers.ThrowableTransformer;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
@@ -16,33 +21,33 @@ class ChaoticInvocationHandlerTest {
         ChaoticInvocationHandler chaoticInvocationHandler = new ChaoticInvocationHandler(new InnerClass());
 
         assertNotNull(chaoticInvocationHandler.getDecisionMaker());
-        assertTrue(chaoticInvocationHandler.getDecisionMaker() instanceof RandomDecisionMaker);
+        assertTrue(chaoticInvocationHandler.getDecisionMaker() instanceof ProbabilityBasedDecisionMaker);
     }
 
     @Test
-    void instantiating_ChaoticInvocationHandler_with_only_target_parameter_creates_default_ThrowableSupplier() {
+    void instantiating_ChaoticInvocationHandler_with_only_target_parameter_creates_ThrowableSupplierManager() {
         ChaoticInvocationHandler chaoticInvocationHandler = new ChaoticInvocationHandler(new InnerClass());
 
-        assertNotNull(chaoticInvocationHandler.getDefaultThrowableSupplier());
-        assertTrue(chaoticInvocationHandler.getDefaultThrowableSupplier() instanceof RuntimeExceptionSupplier);
+        assertNotNull(chaoticInvocationHandler.getThrowableSupplierManager());
+        assertTrue(chaoticInvocationHandler.getThrowableSupplierManager().getDefaultThrowableSupplier() instanceof RuntimeExceptionSupplier);
     }
 
     @Test
     void using_ChaoticInvocationHandler_correctly_handles_proxied_methods() {
 
         InnerClass innerClass = new InnerClass();
-        RandomDecisionMaker randomDecisionMaker = new RandomDecisionMaker(0);
+        ProbabilityBasedDecisionMaker probabilityBasedDecisionMaker = new ProbabilityBasedDecisionMaker(0);
 
         InnerInterface proxiedClass = (InnerInterface) Proxy.newProxyInstance(
                 this.getClass().getClassLoader(),
                 new Class[] { InnerInterface.class },
-                new ChaoticInvocationHandler(innerClass, randomDecisionMaker)
+                new ChaoticInvocationHandler(innerClass, probabilityBasedDecisionMaker)
         );
 
         for (int i = 0; i < 1000000; i++) {
             assertDoesNotThrow(proxiedClass::execute);
         }
-        randomDecisionMaker.setProbability(1);
+        probabilityBasedDecisionMaker.setProbability(1);
         for (int i = 0; i < 1000000; i++) {
             assertThrows(RuntimeException.class, proxiedClass::execute);
         }
@@ -51,12 +56,12 @@ class ChaoticInvocationHandlerTest {
     @Test
     void when_no_ThrowableTransformersManager_is_supplied_Throwables_are_not_transformed() {
         InnerClass innerClass = new InnerClass();
-        RandomDecisionMaker randomDecisionMaker = new RandomDecisionMaker(1);
+        ProbabilityBasedDecisionMaker probabilityBasedDecisionMaker = new ProbabilityBasedDecisionMaker(1);
 
         InnerInterface proxiedClass = (InnerInterface) Proxy.newProxyInstance(
                 this.getClass().getClassLoader(),
                 new Class[] { InnerInterface.class },
-                new ChaoticInvocationHandler(innerClass, randomDecisionMaker)
+                new ChaoticInvocationHandler(innerClass, probabilityBasedDecisionMaker)
         );
 
         assertThrows(RuntimeException.class, proxiedClass::get);
@@ -68,7 +73,7 @@ class ChaoticInvocationHandlerTest {
     @Test
     void ThrowableTransformers_get_correctly_used_when_required() throws NoSuchMethodException {
         InnerClass innerClass = new InnerClass();
-        RandomDecisionMaker randomDecisionMaker = new RandomDecisionMaker(1);
+        ProbabilityBasedDecisionMaker probabilityBasedDecisionMaker = new ProbabilityBasedDecisionMaker(1);
 
         Map<Method, ThrowableTransformer> throwableTransformers = new HashMap<>();
         Method getMethod = InnerInterface.class.getMethod("get");
@@ -81,7 +86,7 @@ class ChaoticInvocationHandlerTest {
         InnerInterface proxiedClass = (InnerInterface) Proxy.newProxyInstance(
                 this.getClass().getClassLoader(),
                 new Class[] { InnerInterface.class },
-                new ChaoticInvocationHandler(innerClass, randomDecisionMaker, throwableTransformerManager)
+                new ChaoticInvocationHandler(innerClass, probabilityBasedDecisionMaker, throwableTransformerManager)
         );
 
         assertFalse(proxiedClass.get());

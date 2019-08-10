@@ -1,5 +1,7 @@
-package io.github.artus;
+package io.github.artus.managers;
 
+import io.github.artus.exceptions.MissingTransformerException;
+import io.github.artus.transformers.ThrowableTransformer;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -35,10 +37,6 @@ public class ThrowableTransformerManager {
             String message = String.format("No transformer was found for method %s", method.getName());
             throw new MissingTransformerException(message);
         }
-
-        if (this.getTransformers().containsKey(method)) {
-            return this.getTransformers().get(method).transform(throwable);
-        }
-        return this.getDefaultTransformer().transform(throwable);
+        return this.getTransformers().getOrDefault(method, this.getDefaultTransformer()).transform(throwable);
     }
 }

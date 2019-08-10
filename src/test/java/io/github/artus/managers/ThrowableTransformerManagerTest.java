@@ -1,5 +1,8 @@
-package io.github.artus;
+package io.github.artus.managers;
 
+import io.github.artus.exceptions.MissingTransformerException;
+import io.github.artus.managers.ThrowableTransformerManager;
+import io.github.artus.transformers.ThrowableTransformer;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
