@@ -1,4 +1,4 @@
-package io.github.artus.suppliers;
+package io.github.artus.malcolm.suppliers;
 
 public class RuntimeExceptionSupplier implements ThrowableSupplier<RuntimeException> {
 

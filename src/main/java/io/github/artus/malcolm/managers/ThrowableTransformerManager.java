@@ -1,7 +1,7 @@
-package io.github.artus.managers;
+package io.github.artus.malcolm.managers;
 
-import io.github.artus.exceptions.MissingTransformerException;
-import io.github.artus.transformers.ThrowableTransformer;
+import io.github.artus.malcolm.exceptions.MissingTransformerException;
+import io.github.artus.malcolm.transformers.ThrowableTransformer;
 import lombok.AccessLevel;
 import lombok.Getter;
 

@@ -1,8 +1,8 @@
-package io.github.artus.managers;
+package io.github.artus.malcolm.managers;
 
-import io.github.artus.exceptions.MissingSupplierException;
-import io.github.artus.suppliers.RuntimeExceptionSupplier;
-import io.github.artus.suppliers.ThrowableSupplier;
+import io.github.artus.malcolm.exceptions.MissingSupplierException;
+import io.github.artus.malcolm.suppliers.RuntimeExceptionSupplier;
+import io.github.artus.malcolm.suppliers.ThrowableSupplier;
 import lombok.Getter;
 
 import java.lang.reflect.Method;

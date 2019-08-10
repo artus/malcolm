@@ -1,10 +1,11 @@
-package io.github.artus;
+package io.github.artus.malcolm;
 
-import io.github.artus.decisionmakers.ProbabilityBasedDecisionMaker;
-import io.github.artus.managers.ThrowableTransformerManager;
-import io.github.artus.suppliers.RuntimeExceptionSupplier;
-import io.github.artus.transformers.BooleanThrowableTransformer;
-import io.github.artus.transformers.ThrowableTransformer;
+import io.github.artus.malcolm.ChaoticInvocationHandler;
+import io.github.artus.malcolm.decisionmakers.ProbabilityBasedDecisionMaker;
+import io.github.artus.malcolm.managers.ThrowableTransformerManager;
+import io.github.artus.malcolm.suppliers.RuntimeExceptionSupplier;
+import io.github.artus.malcolm.transformers.BooleanThrowableTransformer;
+import io.github.artus.malcolm.transformers.ThrowableTransformer;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;

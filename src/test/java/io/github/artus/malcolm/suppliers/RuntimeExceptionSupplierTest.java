@@ -1,6 +1,5 @@
-package io.github.artus.suppliers;
+package io.github.artus.malcolm.suppliers;
 
-import io.github.artus.suppliers.RuntimeExceptionSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

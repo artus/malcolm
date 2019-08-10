@@ -1,10 +1,10 @@
-package io.github.artus;
+package io.github.artus.malcolm;
 
-import io.github.artus.decisionmakers.DecisionMaker;
-import io.github.artus.decisionmakers.ProbabilityBasedDecisionMaker;
-import io.github.artus.managers.ThrowableSupplierManager;
-import io.github.artus.managers.ThrowableTransformerManager;
-import io.github.artus.suppliers.RuntimeExceptionSupplier;
+import io.github.artus.malcolm.decisionmakers.DecisionMaker;
+import io.github.artus.malcolm.decisionmakers.ProbabilityBasedDecisionMaker;
+import io.github.artus.malcolm.managers.ThrowableSupplierManager;
+import io.github.artus.malcolm.managers.ThrowableTransformerManager;
+import io.github.artus.malcolm.suppliers.RuntimeExceptionSupplier;
 import lombok.Getter;
 
 import java.lang.reflect.InvocationHandler;

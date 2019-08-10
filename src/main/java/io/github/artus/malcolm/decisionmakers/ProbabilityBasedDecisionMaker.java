@@ -1,4 +1,4 @@
-package io.github.artus.decisionmakers;
+package io.github.artus.malcolm.decisionmakers;
 
 import lombok.AccessLevel;
 import lombok.Getter;

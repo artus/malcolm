@@ -1,6 +1,6 @@
-package io.github.artus.decisionmakers;
+package io.github.artus.malcolm.decisionmakers;
 
-import io.github.artus.decisionmakers.ProbabilityBasedDecisionMaker;
+import io.github.artus.malcolm.decisionmakers.ProbabilityBasedDecisionMaker;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

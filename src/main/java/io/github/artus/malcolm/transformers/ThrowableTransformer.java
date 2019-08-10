@@ -1,4 +1,4 @@
-package io.github.artus.transformers;
+package io.github.artus.malcolm.transformers;
 
 @FunctionalInterface
 public interface ThrowableTransformer<T> {
