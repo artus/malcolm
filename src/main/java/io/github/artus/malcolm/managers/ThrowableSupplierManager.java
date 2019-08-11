@@ -1,7 +1,7 @@
 package io.github.artus.malcolm.managers;
 
 import io.github.artus.malcolm.exceptions.MissingSupplierException;
-import io.github.artus.malcolm.suppliers.RuntimeExceptionSupplier;
+import io.github.artus.malcolm.suppliers.ChaoticExceptionSupplier;
 import io.github.artus.malcolm.suppliers.ThrowableSupplier;
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ public class ThrowableSupplierManager {
     private final ThrowableSupplier defaultThrowableSupplier;
 
     public ThrowableSupplierManager() {
-        this(new RuntimeExceptionSupplier());
+        this(new ChaoticExceptionSupplier());
     }
 
     public ThrowableSupplierManager(ThrowableSupplier defaultThrowableSupplier) {

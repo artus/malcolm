@@ -1,9 +1,9 @@
 package io.github.artus.malcolm;
 
-import io.github.artus.malcolm.ChaoticInvocationHandler;
 import io.github.artus.malcolm.decisionmakers.ProbabilityBasedDecisionMaker;
+import io.github.artus.malcolm.exceptions.ChaoticException;
 import io.github.artus.malcolm.managers.ThrowableTransformerManager;
-import io.github.artus.malcolm.suppliers.RuntimeExceptionSupplier;
+import io.github.artus.malcolm.suppliers.ChaoticExceptionSupplier;
 import io.github.artus.malcolm.transformers.BooleanThrowableTransformer;
 import io.github.artus.malcolm.transformers.ThrowableTransformer;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class ChaoticInvocationHandlerTest {
         ChaoticInvocationHandler chaoticInvocationHandler = new ChaoticInvocationHandler(new InnerClass());
 
         assertNotNull(chaoticInvocationHandler.getThrowableSupplierManager());
-        assertTrue(chaoticInvocationHandler.getThrowableSupplierManager().getDefaultThrowableSupplier() instanceof RuntimeExceptionSupplier);
+        assertTrue(chaoticInvocationHandler.getThrowableSupplierManager().getDefaultThrowableSupplier() instanceof ChaoticExceptionSupplier);
     }
 
     @Test
@@ -50,7 +50,7 @@ class ChaoticInvocationHandlerTest {
         }
         probabilityBasedDecisionMaker.setProbability(1);
         for (int i = 0; i < 1000000; i++) {
-            assertThrows(RuntimeException.class, proxiedClass::execute);
+            assertThrows(ChaoticException.class, proxiedClass::execute);
         }
     }
 
@@ -65,8 +65,8 @@ class ChaoticInvocationHandlerTest {
                 new ChaoticInvocationHandler(innerClass, probabilityBasedDecisionMaker)
         );
 
-        assertThrows(RuntimeException.class, proxiedClass::get);
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(ChaoticException.class, proxiedClass::get);
+        assertThrows(ChaoticException.class, () -> {
             String toString = proxiedClass.someString();
         });
     }

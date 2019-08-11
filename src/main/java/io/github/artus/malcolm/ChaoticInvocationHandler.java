@@ -4,11 +4,14 @@ import io.github.artus.malcolm.decisionmakers.DecisionMaker;
 import io.github.artus.malcolm.decisionmakers.ProbabilityBasedDecisionMaker;
 import io.github.artus.malcolm.managers.ThrowableSupplierManager;
 import io.github.artus.malcolm.managers.ThrowableTransformerManager;
-import io.github.artus.malcolm.suppliers.RuntimeExceptionSupplier;
+import io.github.artus.malcolm.suppliers.ChaoticExceptionSupplier;
 import lombok.Getter;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class ChaoticInvocationHandler implements InvocationHandler {
@@ -23,7 +26,7 @@ public class ChaoticInvocationHandler implements InvocationHandler {
     }
 
     public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker) {
-        this(target, decisionMaker, new ThrowableSupplierManager(new RuntimeExceptionSupplier()));
+        this(target, decisionMaker, new ThrowableSupplierManager(new ChaoticExceptionSupplier()));
     }
 
     public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, ThrowableSupplierManager throwableSupplierManager) {
@@ -31,7 +34,7 @@ public class ChaoticInvocationHandler implements InvocationHandler {
     }
 
     public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, ThrowableTransformerManager throwableTransformerManager) {
-        this(target, decisionMaker, new ThrowableSupplierManager(new RuntimeExceptionSupplier()), throwableTransformerManager);
+        this(target, decisionMaker, new ThrowableSupplierManager(new ChaoticExceptionSupplier()), throwableTransformerManager);
     }
 
     public ChaoticInvocationHandler(Object target, DecisionMaker decisionMaker, ThrowableSupplierManager throwableSupplierManager, ThrowableTransformerManager throwableTransformerManager) {
@@ -42,7 +45,7 @@ public class ChaoticInvocationHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object target, Method method, Object[] args) throws Throwable {
         if (this.interventionIsRequired(method)) {
             Throwable throwable = this.getThrowableSupplierManager().supply(method);
             if (this.transformationIsRequired(method)) {
@@ -50,6 +53,7 @@ public class ChaoticInvocationHandler implements InvocationHandler {
             }
             throw throwable;
         } else {
+            method.setAccessible(true);
             return method.invoke(this.getTarget(), args);
         }
     }

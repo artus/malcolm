@@ -1,7 +1,7 @@
 package io.github.artus.malcolm.managers;
 
 import io.github.artus.malcolm.exceptions.MissingSupplierException;
-import io.github.artus.malcolm.suppliers.RuntimeExceptionSupplier;
+import io.github.artus.malcolm.suppliers.ChaoticExceptionSupplier;
 import io.github.artus.malcolm.suppliers.ThrowableSupplier;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ class ThrowableSupplierManagerTest {
 
     @Test
     void NoArgsConstructor_will_set_default_ThrowableSupplier_to_RuntimeExeptionSupplier() {
-        assertTrue(new ThrowableSupplierManager().getDefaultThrowableSupplier() instanceof RuntimeExceptionSupplier);
+        assertTrue(new ThrowableSupplierManager().getDefaultThrowableSupplier() instanceof ChaoticExceptionSupplier);
     }
 
     @Test
@@ -23,7 +23,7 @@ class ThrowableSupplierManagerTest {
         Method getMethod = InnerClass.class.getMethod("get");
 
         Map<Method, ThrowableSupplier> throwableSuppliers = new HashMap<>();
-        throwableSuppliers.put(getMethod, new RuntimeExceptionSupplier());
+        throwableSuppliers.put(getMethod, new ChaoticExceptionSupplier());
         ThrowableSupplierManager throwableSupplierManager = new ThrowableSupplierManager(throwableSuppliers);
 
         assertNull(throwableSupplierManager.getDefaultThrowableSupplier());
@@ -36,7 +36,7 @@ class ThrowableSupplierManagerTest {
         Method someStringMethod = InnerClass.class.getMethod("someString");
 
         Map<Method, ThrowableSupplier> throwableSuppliers = new HashMap<>();
-        throwableSuppliers.put(getMethod, new RuntimeExceptionSupplier());
+        throwableSuppliers.put(getMethod, new ChaoticExceptionSupplier());
         ThrowableSupplierManager throwableSupplierManager = new ThrowableSupplierManager(throwableSuppliers);
 
         assertTrue(throwableSupplierManager.interventionIsRequired(getMethod));
@@ -49,7 +49,7 @@ class ThrowableSupplierManagerTest {
         Method someStringMethod = InnerClass.class.getMethod("someString");
 
         Map<Method, ThrowableSupplier> throwableSuppliers = new HashMap<>();
-        throwableSuppliers.put(getMethod, new RuntimeExceptionSupplier());
+        throwableSuppliers.put(getMethod, new ChaoticExceptionSupplier());
         ThrowableSupplierManager throwableSupplierManager = new ThrowableSupplierManager(throwableSuppliers);
 
         MissingSupplierException missingSupplierException = assertThrows(MissingSupplierException.class, () -> {
@@ -66,7 +66,7 @@ class ThrowableSupplierManagerTest {
         String message = "This is the errormessage for the default ThrowableSupplier.";
 
         Map<Method, ThrowableSupplier> throwableSuppliers = new HashMap<>();
-        throwableSuppliers.put(getMethod, new RuntimeExceptionSupplier());
+        throwableSuppliers.put(getMethod, new ChaoticExceptionSupplier());
         ThrowableSupplierManager throwableSupplierManager = new ThrowableSupplierManager(() -> new ClassNotFoundException(message), throwableSuppliers);
 
         Throwable throwable = throwableSupplierManager.supply(someStringMethod);
@@ -82,12 +82,12 @@ class ThrowableSupplierManagerTest {
         String message = "This is the errormessage for the default ThrowableSupplier.";
 
         Map<Method, ThrowableSupplier> throwableSuppliers = new HashMap<>();
-        throwableSuppliers.put(getMethod, new RuntimeExceptionSupplier());
+        throwableSuppliers.put(getMethod, new ChaoticExceptionSupplier());
         ThrowableSupplierManager throwableSupplierManager = new ThrowableSupplierManager(() -> new ClassNotFoundException(message), throwableSuppliers);
 
         Throwable throwable = throwableSupplierManager.supply(getMethod);
         assertTrue(throwable instanceof RuntimeException);
-        assertEquals(RuntimeExceptionSupplier.MESSAGE, throwable.getMessage());
+        assertEquals(ChaoticExceptionSupplier.MESSAGE, throwable.getMessage());
     }
 
     private static class InnerClass {
