@@ -3,10 +3,8 @@ package io.github.artus.malcolm.annotations;
 import io.github.artus.malcolm.exceptions.ChaoticException;
 import io.github.artus.malcolm.factory.ChaoticProxyFactory;
 import org.junit.jupiter.api.Test;
-import sun.plugin.security.Broken11ClassFixer;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 public class MalcolmAnnotationHandlerTest {
 
@@ -34,7 +32,7 @@ public class MalcolmAnnotationHandlerTest {
             try {
                 classContainingChaoticProperty.getNotProxied();
                 count++;
-            } catch(ChaoticException e) {
+            } catch (ChaoticException e) {
                 chaoticExceptionOccuredOnNotProxiedClass = true;
             }
         }
